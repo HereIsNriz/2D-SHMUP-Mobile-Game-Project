@@ -8,13 +8,16 @@ public class PlayerController : MonoBehaviour
     public int Lives;
 
     //
+    [SerializeField] private GameObject m_playerProjectile;
     [SerializeField] private float m_speed;
-    [SerializeField] private Vector3 m_touchPosition;
-    [SerializeField] private bool m_isScreenTouched;
+    [SerializeField] private float m_shootDelay = 1f;
 
     //
     private Rigidbody2D m_playerRb;
     private GameManager m_gameManager;
+    private GameObject m_projectileOut;
+    private Vector3 m_touchPosition;
+    private bool m_isScreenTouched;
     private float m_xPosition = 1.8f;
     private float m_minYPosition = -3.5f;
     private float m_maxYPosition = 0.5f;
@@ -24,7 +27,9 @@ public class PlayerController : MonoBehaviour
     {
         m_playerRb = GetComponent<Rigidbody2D>();
         m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        m_projectileOut = GameObject.Find("Projectile Out");
         m_isScreenTouched = false;
+        StartCoroutine(ShootProjectile());
     }
 
     // Update is called once per frame
@@ -63,6 +68,16 @@ public class PlayerController : MonoBehaviour
                 Mathf.Clamp(transform.position.x, -m_xPosition, m_xPosition),
                 Mathf.Clamp(transform.position.y, m_minYPosition, m_maxYPosition),
                 0);
+        }
+    }
+
+    private IEnumerator ShootProjectile()
+    {
+        while (m_gameManager.IsGameRunning)
+        {
+            yield return new WaitForSeconds(m_shootDelay);
+
+            Instantiate(m_playerProjectile, m_projectileOut.transform.position, Quaternion.identity);
         }
     }
 }
