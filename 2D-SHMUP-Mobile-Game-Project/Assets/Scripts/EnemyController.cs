@@ -69,7 +69,7 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Projectile"))
         {
-            Destroy(collision.gameObject);
+            m_gameManager.ReturnProjectileToPool(collision.gameObject);
             m_lives--;
         }
 

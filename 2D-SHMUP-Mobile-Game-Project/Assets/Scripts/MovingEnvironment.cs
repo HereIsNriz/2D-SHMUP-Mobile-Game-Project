@@ -7,7 +7,7 @@ public class MovingEnvironment : MonoBehaviour
     //
 
     //
-    [SerializeField] private float speed;
+    [SerializeField] private float m_speed;
     //
     private Rigidbody2D m_envinronmentRb;
     private GameManager m_gameManager;
@@ -25,7 +25,6 @@ public class MovingEnvironment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (transform.position.y <= m_resetPosition)
         {
             transform.position = m_startPosition;
@@ -42,6 +41,6 @@ public class MovingEnvironment : MonoBehaviour
 
     private void MoveGroundAndFloor()
     {
-        m_envinronmentRb.velocity = Vector2.down * speed * Time.deltaTime;
+        m_envinronmentRb.velocity = Vector2.down * m_speed * Time.deltaTime;
     }
 }

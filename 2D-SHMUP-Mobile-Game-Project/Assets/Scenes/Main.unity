@@ -155,6 +155,9 @@ MonoBehaviour:
   m_enemyPrefab:
   - {fileID: 2973681482141443071, guid: 9907d87e43fefc644b53145e4dec7132, type: 3}
   - {fileID: 3264981192362568334, guid: 80765e4b57861d44aa079b2b02ccae93, type: 3}
+  m_projectilePrefab: {fileID: 7984635514949525532, guid: 0b2393cc9b7a8014f9113078ca33d670, type: 3}
+  m_projectilePoolSize: 20
+  m_enemySpawnDelay: 2
 --- !u!4 &108102806
 Transform:
   m_ObjectHideFlags: 0
@@ -400,7 +403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e0b97900e6144344a6c7562e7f6b684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  m_speed: 100
 --- !u!1 &335855409
 GameObject:
   m_ObjectHideFlags: 0

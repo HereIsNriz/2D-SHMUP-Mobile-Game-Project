@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             yield return new WaitForSeconds(m_shootDelay);
 
-            Instantiate(m_playerProjectile, m_projectileOut.transform.position, Quaternion.identity);
+            m_gameManager.ShootProjectile(m_projectileOut.transform.position, Quaternion.identity);
         }
     }
 }

@@ -7,17 +7,17 @@ public class ProjectileController : MonoBehaviour
     //
 
     //
-    [SerializeField] private float speed;
+    [SerializeField] private float m_speed;
 
     //
-    private Rigidbody2D projectileRb;
-    private GameManager gameManager;
+    private Rigidbody2D m_projectileRb;
+    private GameManager m_gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        projectileRb = GetComponent<Rigidbody2D>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        m_projectileRb = GetComponent<Rigidbody2D>();
+        m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -25,13 +25,13 @@ public class ProjectileController : MonoBehaviour
     {
         if (transform.position.y >= 6f)
         {
-            Destroy(gameObject);
+            m_gameManager.ReturnProjectileToPool(this.gameObject);
         }
     }
 
     private void FixedUpdate()
     {
-        if (gameManager.IsGameRunning)
+        if (m_gameManager.IsGameRunning)
         {
             MoveProjectile();
         }
@@ -39,6 +39,6 @@ public class ProjectileController : MonoBehaviour
 
     private void MoveProjectile()
     {
-        projectileRb.velocity = transform.up * speed * Time.deltaTime;
+        m_projectileRb.velocity = transform.up * m_speed * Time.deltaTime;
     }
 }
