@@ -10,10 +10,12 @@ public class GameManager : MonoBehaviour
     //
     [SerializeField] private GameObject[] m_enemyPrefab;
     [SerializeField] private GameObject m_projectilePrefab;
+    [SerializeField] private GameObject m_enemyProjectilePrefab;
     [SerializeField] private int m_projectilePoolSize;
 
     //
     private Queue<GameObject> m_projectilePool = new Queue<GameObject>();
+    private Queue<GameObject> m_enemyProjectilePool = new Queue<GameObject>();
     [SerializeField] private float m_enemySpawnDelay = 2f;
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < m_projectilePoolSize; i++)
         {
             StoreProjectileIntoPool();
+            StoreEnemyProjectileIntoPool();
         }
     }
 
@@ -53,6 +56,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Player Projectile
     private GameObject StoreProjectileIntoPool()
     {
         GameObject projectile = Instantiate(m_projectilePrefab);
@@ -75,5 +79,30 @@ public class GameManager : MonoBehaviour
     {
         projectile.gameObject.SetActive(false);
         m_projectilePool.Enqueue(projectile);
+    }
+
+    // Enemy Projectile
+    private GameObject StoreEnemyProjectileIntoPool()
+    {
+        GameObject enemyProjectile = Instantiate(m_enemyProjectilePrefab);
+        enemyProjectile.gameObject.SetActive(false);
+        m_enemyProjectilePool.Enqueue(enemyProjectile);
+
+        return enemyProjectile;
+    }
+
+    public GameObject ShootEnemyProjectile(Vector2 position, Quaternion rotation)
+    {
+        GameObject enemyProjectile = m_enemyProjectilePool.Count > 0 ? m_enemyProjectilePool.Dequeue() : StoreEnemyProjectileIntoPool();
+        enemyProjectile.gameObject.transform.SetPositionAndRotation(position, rotation);
+        enemyProjectile.gameObject.SetActive(true);
+
+        return enemyProjectile;
+    }
+
+    public void ReturnEnemyProjectileToPool(GameObject enemyProjectile)
+    {
+        enemyProjectile.gameObject.SetActive(false);
+        m_enemyProjectilePool.Enqueue(enemyProjectile);
     }
 }

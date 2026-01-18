@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
     //
 
     //
+    [SerializeField] private GameObject m_enemyProjectileOut;
     [SerializeField] protected int m_lives;
     [SerializeField] protected float m_speed;
     [SerializeField] protected bool m_isBoss;
@@ -18,6 +19,7 @@ public class EnemyController : MonoBehaviour
     protected PlayerController m_player;
     protected float m_bottomScreen = -5f;
     protected float m_bossMaxPosition = 3f;
+    protected float m_shootDelay = 1.2f;
 
     // Start is called before the first frame update
     protected void Start()
@@ -25,6 +27,11 @@ public class EnemyController : MonoBehaviour
         m_enemyRb = GetComponent<Rigidbody2D>();
         m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
+
+        if (m_canShoot)
+        {
+            StartCoroutine(ShootEnemyProjectile());
+        }
     }
 
     // Update is called once per frame
@@ -39,11 +46,6 @@ public class EnemyController : MonoBehaviour
         if (m_lives <= 0)
         {
             Destroy(gameObject);
-        }
-
-        if (m_canShoot)
-        {
-            
         }
     }
 
@@ -62,6 +64,16 @@ public class EnemyController : MonoBehaviour
         if (transform.position.y <= m_bossMaxPosition && m_isBoss)
         {
             m_enemyRb.velocity = Vector3.zero;
+        }
+    }
+
+    protected IEnumerator ShootEnemyProjectile()
+    {
+        while (m_gameManager.IsGameRunning)
+        {
+            yield return new WaitForSeconds(m_shootDelay);
+
+            m_gameManager.ShootEnemyProjectile(m_enemyProjectileOut.transform.position, Quaternion.identity);
         }
     }
 
