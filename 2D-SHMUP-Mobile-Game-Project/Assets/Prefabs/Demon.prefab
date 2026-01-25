@@ -104,6 +104,7 @@ MonoBehaviour:
   m_enemyProjectileOut: {fileID: 4465909148062933588}
   m_lives: 4
   m_speed: 100
+  m_enemyScore: 20
   m_isBoss: 0
   m_canShoot: 1
 --- !u!50 &3412759557335088926

@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private GameObject m_enemyProjectileOut;
     [SerializeField] protected int m_lives;
     [SerializeField] protected float m_speed;
+    [SerializeField] protected int m_enemyScore;
     [SerializeField] protected bool m_isBoss;
     [SerializeField] protected bool m_canShoot;
 
@@ -46,6 +47,7 @@ public class EnemyController : MonoBehaviour
         if (m_lives <= 0)
         {
             Destroy(gameObject);
+            m_gameManager.PlayerScore += m_enemyScore;
         }
     }
 

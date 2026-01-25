@@ -40,6 +40,11 @@ public class PlayerController : MonoBehaviour
             DetectTouchInput();
             MovePlayer();
         }
+
+        if (Lives == 0)
+        {
+            m_gameManager.GameOver();
+        }
     }
 
     private void DetectTouchInput()

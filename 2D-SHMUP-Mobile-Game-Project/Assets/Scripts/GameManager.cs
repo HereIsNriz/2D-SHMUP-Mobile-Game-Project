@@ -1,16 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     //
     public bool IsGameRunning;
+    public int PlayerScore;
 
     //
     [SerializeField] private GameObject[] m_enemyPrefab;
     [SerializeField] private GameObject m_projectilePrefab;
     [SerializeField] private GameObject m_enemyProjectilePrefab;
+    [SerializeField] private GameObject m_gameOverPanel;
+    [SerializeField] private GameObject m_statsPanel;
+    [SerializeField] private TextMeshProUGUI m_scoreText;
+    [SerializeField] private TextMeshProUGUI m_newHighScoreText;
     [SerializeField] private int m_projectilePoolSize;
 
     //
@@ -19,9 +26,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float m_enemySpawnDelay = 2f;
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
+    private bool m_hasReachNewHighScore;
 
     private void Awake()
     {
+        m_hasReachNewHighScore = false;
+        m_newHighScoreText.gameObject.SetActive(false);
         for (int i = 0; i < m_projectilePoolSize; i++)
         {
             StoreProjectileIntoPool();
@@ -39,9 +49,40 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        SetScore();
     }
 
+    private void SetScore()
+    {
+        if (PlayerScore > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            PlayerPrefs.SetInt("HighScore", PlayerScore);
+            m_hasReachNewHighScore = true;
+        }
+        m_scoreText.text = "Score:\n" +  PlayerScore.ToString();
+    }
+
+    public void GameOver()
+    {
+        IsGameRunning = false;
+        m_gameOverPanel.SetActive(true);
+    }
+
+    public void NextButton()
+    {
+        m_gameOverPanel.SetActive(false);
+        if (m_hasReachNewHighScore)
+        {
+            m_newHighScoreText.gameObject.SetActive(true);
+        }
+        m_statsPanel.SetActive(true);
+    }
+
+    public void BackToMenuButton()
+    {
+        m_statsPanel.SetActive(false);
+        SceneManager.LoadScene(0);
+    }
     private IEnumerator SpawnEnemy()
     {
         while (IsGameRunning)
@@ -56,7 +97,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Player Projectile
+    // Player Projectile Pool
     private GameObject StoreProjectileIntoPool()
     {
         GameObject projectile = Instantiate(m_projectilePrefab);
@@ -81,7 +122,7 @@ public class GameManager : MonoBehaviour
         m_projectilePool.Enqueue(projectile);
     }
 
-    // Enemy Projectile
+    // Enemy Projectile Pool
     private GameObject StoreEnemyProjectileIntoPool()
     {
         GameObject enemyProjectile = Instantiate(m_enemyProjectilePrefab);

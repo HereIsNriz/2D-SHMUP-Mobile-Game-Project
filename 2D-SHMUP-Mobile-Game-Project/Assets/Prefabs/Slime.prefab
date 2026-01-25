@@ -100,8 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06edb2e2f05f5e74abecdd97520f8307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_enemyProjectileOut: {fileID: 0}
   m_lives: 2
   m_speed: 100
+  m_enemyScore: 5
   m_isBoss: 0
   m_canShoot: 0
 --- !u!50 &5732479005471161106
