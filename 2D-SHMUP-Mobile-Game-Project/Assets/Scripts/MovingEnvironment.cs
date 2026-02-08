@@ -33,9 +33,20 @@ public class MovingEnvironment : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (m_gameManager.IsGameRunning)
+        if (m_gameManager.IsBossExist)
         {
-            MoveGroundAndFloor();
+            m_envinronmentRb.velocity = Vector3.zero;
+        }
+        else
+        {
+            if (m_gameManager.IsGameRunning)
+            {
+                MoveGroundAndFloor();
+            }
+            else
+            {
+                m_envinronmentRb.velocity = Vector3.zero;
+            }
         }
     }
 

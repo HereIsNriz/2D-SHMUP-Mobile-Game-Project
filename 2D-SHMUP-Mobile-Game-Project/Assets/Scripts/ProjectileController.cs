@@ -9,6 +9,7 @@ public class ProjectileController : MonoBehaviour
     //
     [SerializeField] private float m_speed;
     [SerializeField] private bool m_isEnemyProjectile;
+    [SerializeField] private bool m_isBossProjectile;
 
     //
     private Rigidbody2D m_projectileRb;
@@ -38,6 +39,11 @@ public class ProjectileController : MonoBehaviour
             {
                 m_gameManager.ReturnEnemyProjectileToPool(this.gameObject);
             }
+
+            if (m_isBossProjectile)
+            {
+                m_gameManager.ReturnBossProjectileToPool(this.gameObject);
+            }
         }
     }
 
@@ -45,7 +51,7 @@ public class ProjectileController : MonoBehaviour
     {
         if (m_gameManager.IsGameRunning)
         {
-            if (m_isEnemyProjectile)
+            if (m_isEnemyProjectile || m_isBossProjectile)
             {
                 MoveProjectileDown();
             }
@@ -73,6 +79,15 @@ public class ProjectileController : MonoBehaviour
             if (collision.gameObject.CompareTag("Player"))
             {
                 m_gameManager.ReturnEnemyProjectileToPool(this.gameObject);
+                m_player.Lives--;
+            }
+        }
+
+        if (m_isBossProjectile)
+        {
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                m_gameManager.ReturnBossProjectileToPool(this.gameObject);
                 m_player.Lives--;
             }
         }

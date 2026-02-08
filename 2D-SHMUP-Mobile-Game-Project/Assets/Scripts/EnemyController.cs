@@ -7,9 +7,10 @@ public class EnemyController : MonoBehaviour
     //
 
     //
-    [SerializeField] private GameObject m_enemyProjectileOut;
+    [SerializeField] protected GameObject m_enemyProjectileOut;
     [SerializeField] protected int m_lives;
     [SerializeField] protected float m_speed;
+    [SerializeField] protected float m_shootDelay = 1.2f;
     [SerializeField] protected int m_enemyScore;
     [SerializeField] protected bool m_isBoss;
     [SerializeField] protected bool m_canShoot;
@@ -20,7 +21,10 @@ public class EnemyController : MonoBehaviour
     protected PlayerController m_player;
     protected float m_bottomScreen = -5f;
     protected float m_bossMaxPosition = 3f;
-    protected float m_shootDelay = 1.2f;
+    protected float m_boosSlidingPosition = 1.3f;
+    protected float m_slidingSpeed = 80f;
+    protected int m_turningPoint = 1;
+    protected bool m_hasMoving = false;
 
     // Start is called before the first frame update
     protected void Start()
@@ -32,6 +36,11 @@ public class EnemyController : MonoBehaviour
         if (m_canShoot)
         {
             StartCoroutine(ShootEnemyProjectile());
+        }
+
+        if (m_isBoss)
+        {
+            StartCoroutine(ShootBossProjectile());
         }
     }
 
@@ -49,6 +58,22 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
             m_gameManager.PlayerScore += m_enemyScore;
         }
+
+        if (m_lives <= 0 && m_isBoss)
+        {
+            m_gameManager.DeactivateBoss();
+            m_gameManager.IsBossExist = false;
+            m_gameManager.WaitForSpawnBoss();
+        }
+
+        if (m_isBoss && (transform.position.x >= m_boosSlidingPosition || transform.position.x <= -m_boosSlidingPosition))
+        {
+            if (!m_hasMoving)
+            {
+                m_turningPoint *= -1;
+                m_hasMoving = true;
+            }
+        }
     }
 
     protected void FixedUpdate()
@@ -65,7 +90,8 @@ public class EnemyController : MonoBehaviour
 
         if (transform.position.y <= m_bossMaxPosition && m_isBoss)
         {
-            m_enemyRb.velocity = Vector3.zero;
+            m_enemyRb.velocity = Vector2.down * 0;
+            m_enemyRb.velocity = Vector2.right * m_slidingSpeed * m_turningPoint * Time.deltaTime;
         }
     }
 
@@ -74,8 +100,16 @@ public class EnemyController : MonoBehaviour
         while (m_gameManager.IsGameRunning)
         {
             yield return new WaitForSeconds(m_shootDelay);
-
             m_gameManager.ShootEnemyProjectile(m_enemyProjectileOut.transform.position, Quaternion.identity);
+        }
+    }
+
+    protected IEnumerator ShootBossProjectile()
+    {
+        while (m_gameManager.IsGameRunning)
+        {
+            yield return new WaitForSeconds(m_shootDelay);
+            m_gameManager.ShootBossProjectile(m_enemyProjectileOut.transform.position, Quaternion.identity);
         }
     }
 
@@ -91,6 +125,11 @@ public class EnemyController : MonoBehaviour
         {
             Destroy(gameObject);
             m_player.Lives--;
+        }
+
+        if (m_isBoss && collision.gameObject.CompareTag("Sensor"))
+        {
+            m_hasMoving = false;
         }
     }
 }
