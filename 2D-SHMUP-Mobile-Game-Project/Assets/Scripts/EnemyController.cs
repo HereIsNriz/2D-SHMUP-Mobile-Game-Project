@@ -4,30 +4,31 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    //
+    // Property
 
-    //
-    [SerializeField] protected GameObject m_enemyProjectileOut;
-    [SerializeField] protected int m_lives;
-    [SerializeField] protected float m_speed;
-    [SerializeField] protected float m_shootDelay = 1.2f;
-    [SerializeField] protected int m_enemyScore;
-    [SerializeField] protected bool m_isBoss;
-    [SerializeField] protected bool m_canShoot;
+    // SerializeField
+    [SerializeField] private GameObject m_enemyProjectileOut;
+    [SerializeField] private int m_lives;
+    [SerializeField] private float m_speed;
+    [SerializeField] private float m_shootDelay = 1.2f;
+    [SerializeField] private int m_enemyScore;
+    [SerializeField] private bool m_isBoss;
+    [SerializeField] private bool m_canShoot;
+    [SerializeField] private bool m_isWeakEnemy;
 
-    //
-    protected Rigidbody2D m_enemyRb;
-    protected GameManager m_gameManager;
-    protected PlayerController m_player;
-    protected float m_bottomScreen = -5f;
-    protected float m_bossMaxPosition = 3f;
-    protected float m_boosSlidingPosition = 1.3f;
-    protected float m_slidingSpeed = 80f;
-    protected int m_turningPoint = 1;
-    protected bool m_hasMoving = false;
+    // Field
+    private Rigidbody2D m_enemyRb;
+    private GameManager m_gameManager;
+    private PlayerController m_player;
+    private float m_bottomScreen = -5f;
+    private float m_bossMaxPosition = 3f;
+    private float m_boosSlidingPosition = 1.3f;
+    private float m_slidingSpeed = 80f;
+    private int m_turningPoint = 1;
+    private bool m_hasMoving = false;
 
     // Start is called before the first frame update
-    protected void Start()
+    private void Start()
     {
         m_enemyRb = GetComponent<Rigidbody2D>();
         m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -45,12 +46,15 @@ public class EnemyController : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected void Update()
+    private void Update()
     {
+        WeakEnemyBehaviour();
+        MediumEnemyBehaviour();
+        StrongEnemyBehaviour();
+        BossBehaviour();
         if (transform.position.y <= m_bottomScreen)
         {
             Destroy(gameObject);
-            m_player.Lives--;
         }
 
         if (m_lives <= 0)
@@ -58,25 +62,9 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
             m_gameManager.PlayerScore += m_enemyScore;
         }
-
-        if (m_lives <= 0 && m_isBoss)
-        {
-            m_gameManager.DeactivateBoss();
-            m_gameManager.IsBossExist = false;
-            m_gameManager.WaitForSpawnBoss();
-        }
-
-        if (m_isBoss && (transform.position.x >= m_boosSlidingPosition || transform.position.x <= -m_boosSlidingPosition))
-        {
-            if (!m_hasMoving)
-            {
-                m_turningPoint *= -1;
-                m_hasMoving = true;
-            }
-        }
     }
 
-    protected void FixedUpdate()
+    private void FixedUpdate()
     {
         if (m_gameManager.IsGameRunning)
         {
@@ -84,7 +72,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected void MoveEnemy()
+    private void MoveEnemy()
     {
         m_enemyRb.velocity = Vector2.down * m_speed * Time.deltaTime;
 
@@ -95,7 +83,57 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected IEnumerator ShootEnemyProjectile()
+    private void WeakEnemyBehaviour()
+    {
+        if (m_isWeakEnemy)
+        {
+            if (transform.position.y <= m_bottomScreen)
+            {
+                m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
+                m_player.Lives--;
+            }
+
+            if (m_lives <= 0)
+            {
+                m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
+                m_gameManager.PlayerScore += m_enemyScore;
+            }
+        }
+    }
+    private void MediumEnemyBehaviour()
+    {
+
+    }
+    private void StrongEnemyBehaviour()
+    {
+        if (m_canShoot)
+        {
+            
+        }
+    }
+    private void BossBehaviour()
+    {
+        if (m_isBoss)
+        {
+            if (m_lives <= 0)
+            {
+                m_gameManager.DeactivateBoss();
+                m_gameManager.IsBossExist = false;
+                m_gameManager.WaitForSpawnBoss();
+            }
+
+            if (transform.position.x >= m_boosSlidingPosition || transform.position.x <= -m_boosSlidingPosition)
+            {
+                if (!m_hasMoving)
+                {
+                    m_turningPoint *= -1;
+                    m_hasMoving = true;
+                }
+            }
+        }
+    }
+
+    private IEnumerator ShootEnemyProjectile()
     {
         while (m_gameManager.IsGameRunning)
         {
@@ -104,7 +142,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected IEnumerator ShootBossProjectile()
+    private IEnumerator ShootBossProjectile()
     {
         while (m_gameManager.IsGameRunning)
         {
@@ -113,12 +151,23 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Projectile"))
         {
             m_gameManager.ReturnProjectileToPool(collision.gameObject);
             m_lives--;
+        }
+
+        if (collision.gameObject.CompareTag("Projectile") && m_isWeakEnemy)
+        {
+            m_lives--;
+        }
+
+        if (m_isWeakEnemy && collision.gameObject.CompareTag("Player"))
+        {
+            m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
+            m_player.Lives--;
         }
 
         if (collision.gameObject.CompareTag("Player"))

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     //
     [SerializeField] private GameObject[] m_enemyPrefab;
+    [SerializeField] private GameObject m_weakEnemyPrefab;
     [SerializeField] private GameObject m_bossPrefab;
     [SerializeField] private GameObject m_projectilePrefab;
     [SerializeField] private GameObject m_enemyProjectilePrefab;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
     private GameObject m_boss;
     private Queue<GameObject> m_projectilePool = new Queue<GameObject>();
     private Queue<GameObject> m_enemyProjectilePool = new Queue<GameObject>();
+    private Queue<GameObject> m_weakEnemyPool = new Queue<GameObject>();
     private Queue<GameObject> m_bossProjectilePool = new Queue<GameObject>();
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
         {
             StoreProjectileIntoPool();
             StoreEnemyProjectileIntoPool();
+            StoreWeakEnemyIntoPool();
         }
         MakeBossExistFirst();
     }
@@ -121,6 +124,18 @@ public class GameManager : MonoBehaviour
         IsBossExist = true;
     }
 
+    public IEnumerator SpawnEnemies()
+    {
+        while (IsGameRunning && !IsBossExist)
+        {
+            yield return new WaitForSeconds(m_enemySpawnDelay);
+
+            int enemyIndex = Random.Range(0, m_enemyPrefab.Length);
+            float randomXPosition = Random.Range(-m_maxXPosition, m_maxXPosition);
+            Vector2 enemySpawnLocation = new Vector2(randomXPosition, m_maxYPosition);
+        }
+    }
+
     private IEnumerator SpawnEnemy()
     {
         while (IsGameRunning && !IsBossExist)
@@ -183,6 +198,31 @@ public class GameManager : MonoBehaviour
     {
         enemyProjectile.gameObject.SetActive(false);
         m_enemyProjectilePool.Enqueue(enemyProjectile);
+    }
+
+    // Weak Enemy Pool
+    private GameObject StoreWeakEnemyIntoPool()
+    {
+        GameObject weakEnemy = Instantiate(m_weakEnemyPrefab);
+        m_weakEnemyPrefab.gameObject.SetActive(false);
+        m_weakEnemyPool.Enqueue(weakEnemy);
+
+        return weakEnemy;
+    }
+
+    private GameObject SpawnWeakEnemy(Vector2 position, Quaternion rotation)
+    {
+        GameObject weakEnemy = m_weakEnemyPool.Count > 0 ? m_weakEnemyPool.Dequeue() : StoreWeakEnemyIntoPool();
+        weakEnemy.gameObject.transform.SetPositionAndRotation(position, rotation);
+        weakEnemy.gameObject.SetActive(true);
+
+        return weakEnemy;
+    }
+
+    public void ReturnWeakEnemyToPool(GameObject weakEnemy)
+    {
+        weakEnemy.gameObject.SetActive(false);
+        m_weakEnemyPool.Enqueue(weakEnemy);
     }
 
     // Boss Pool

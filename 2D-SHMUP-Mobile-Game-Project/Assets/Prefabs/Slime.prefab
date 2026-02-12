@@ -103,9 +103,11 @@ MonoBehaviour:
   m_enemyProjectileOut: {fileID: 0}
   m_lives: 2
   m_speed: 100
+  m_shootDelay: 1.2
   m_enemyScore: 5
   m_isBoss: 0
   m_canShoot: 0
+  m_isWeakEnemy: 1
 --- !u!50 &5732479005471161106
 Rigidbody2D:
   serializedVersion: 4
