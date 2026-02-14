@@ -53,16 +53,6 @@ public class EnemyController : MonoBehaviour
         MediumEnemyBehaviour();
         StrongEnemyBehaviour();
         BossBehaviour();
-        if (transform.position.y <= m_bottomScreen)
-        {
-            Destroy(gameObject);
-        }
-
-        if (m_lives <= 0)
-        {
-            Destroy(gameObject);
-            m_gameManager.PlayerScore += m_enemyScore;
-        }
     }
 
     private void FixedUpdate()
@@ -120,7 +110,16 @@ public class EnemyController : MonoBehaviour
     {
         if (m_canShoot)
         {
-            
+            if (transform.position.y <= m_bottomScreen)
+            {
+                m_gameManager.ReturnStrongEnemyToPool(this.gameObject);
+            }
+
+            if (m_lives <= 0)
+            {
+                m_gameManager.ReturnStrongEnemyToPool(this.gameObject);
+                m_gameManager.PlayerScore += m_enemyScore;
+            }
         }
     }
     private void BossBehaviour()
@@ -188,9 +187,14 @@ public class EnemyController : MonoBehaviour
             m_player.Lives--;
         }
 
-        if (collision.gameObject.CompareTag("Player"))
+        if (m_canShoot && collision.gameObject.CompareTag("Player"))
         {
-            Destroy(gameObject);
+            m_gameManager.ReturnStrongEnemyToPool(this.gameObject);
+            m_player.Lives--;
+        }
+
+        if (m_isBoss && collision.gameObject.CompareTag("Player"))
+        {
             m_player.Lives--;
         }
 

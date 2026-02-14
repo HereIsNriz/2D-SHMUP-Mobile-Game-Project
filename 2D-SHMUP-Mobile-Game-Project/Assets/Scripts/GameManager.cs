@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] m_enemyPrefab;
     [SerializeField] private GameObject m_weakEnemyPrefab;
     [SerializeField] private GameObject m_mediumEnemyPrefab;
+    [SerializeField] private GameObject m_strongEnemyPrefab;
     [SerializeField] private GameObject m_bossPrefab;
     [SerializeField] private GameObject m_projectilePrefab;
     [SerializeField] private GameObject m_enemyProjectilePrefab;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     private Queue<GameObject> m_enemyProjectilePool = new Queue<GameObject>();
     private Queue<GameObject> m_weakEnemyPool = new Queue<GameObject>();
     private Queue<GameObject> m_mediumEnemyPool = new Queue<GameObject>();
+    private Queue<GameObject> m_strongEnemyPool = new Queue<GameObject>();
     private Queue<GameObject> m_bossProjectilePool = new Queue<GameObject>();
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour
             StoreEnemyProjectileIntoPool();
             StoreWeakEnemyIntoPool();
             StoreMediumEnemyIntoPool();
+            StoreStrongEnemyIntoPool();
         }
         MakeBossExistFirst();
     }
@@ -251,6 +254,31 @@ public class GameManager : MonoBehaviour
     {
         mediumEnemy.gameObject.SetActive(false);
         m_mediumEnemyPool.Enqueue(mediumEnemy);
+    }
+
+    // Strong Enemy Pool
+    private GameObject StoreStrongEnemyIntoPool()
+    {
+        GameObject strongEnemy = Instantiate(m_strongEnemyPrefab);
+        strongEnemy.gameObject.SetActive(false);
+        m_strongEnemyPool.Enqueue(strongEnemy);
+
+        return strongEnemy;
+    }
+
+    private GameObject SpawnStrongEnemy(Vector2 position, Quaternion rotation)
+    {
+        GameObject strongEnemy = m_strongEnemyPool.Count > 0 ? m_strongEnemyPool.Dequeue() : StoreStrongEnemyIntoPool();
+        strongEnemy.gameObject.transform.SetPositionAndRotation(position, rotation);
+        strongEnemy.gameObject.SetActive(true);
+
+        return strongEnemy;
+    }
+
+    public void ReturnStrongEnemyToPool(GameObject strongEnemy)
+    {
+        strongEnemy.gameObject.SetActive(false);
+        m_strongEnemyPool.Enqueue(strongEnemy);
     }
 
     // Boss Pool
