@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private bool m_isBoss;
     [SerializeField] private bool m_canShoot;
     [SerializeField] private bool m_isWeakEnemy;
+    [SerializeField] private bool m_isMediumEnemy;
 
     // Field
     private Rigidbody2D m_enemyRb;
@@ -90,7 +91,6 @@ public class EnemyController : MonoBehaviour
             if (transform.position.y <= m_bottomScreen)
             {
                 m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
-                m_player.Lives--;
             }
 
             if (m_lives <= 0)
@@ -102,7 +102,19 @@ public class EnemyController : MonoBehaviour
     }
     private void MediumEnemyBehaviour()
     {
+        if (m_isMediumEnemy)
+        {
+            if (transform.position.y <= m_bottomScreen)
+            {
+                m_gameManager.ReturnMediumEnemyToPool(this.gameObject);
+            }
 
+            if (m_lives <= 0)
+            {
+                m_gameManager.ReturnMediumEnemyToPool(this.gameObject);
+                m_gameManager.PlayerScore += m_enemyScore;
+            }
+        }
     }
     private void StrongEnemyBehaviour()
     {
@@ -153,7 +165,7 @@ public class EnemyController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Projectile"))
+        if (collision.gameObject.CompareTag("Projectile") && !m_isWeakEnemy)
         {
             m_gameManager.ReturnProjectileToPool(collision.gameObject);
             m_lives--;
@@ -167,6 +179,12 @@ public class EnemyController : MonoBehaviour
         if (m_isWeakEnemy && collision.gameObject.CompareTag("Player"))
         {
             m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
+            m_player.Lives--;
+        }
+
+        if (m_isMediumEnemy && collision.gameObject.CompareTag("Player"))
+        {
+            m_gameManager.ReturnMediumEnemyToPool(this.gameObject);
             m_player.Lives--;
         }
 
