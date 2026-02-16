@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     public int PlayerScore;
 
     //
-    [SerializeField] private GameObject[] m_enemyPrefab;
     [SerializeField] private GameObject m_weakEnemyPrefab;
     [SerializeField] private GameObject m_mediumEnemyPrefab;
     [SerializeField] private GameObject m_strongEnemyPrefab;
@@ -42,6 +41,9 @@ public class GameManager : MonoBehaviour
     private float m_timeBeforeBossSpawn = 10f;
     private float m_delayBeforeBossSpawn = 5f;
     private bool m_hasReachNewHighScore;
+    private bool m_isEnemySpawning;
+    private int m_minRandomValue = 0;
+    private int m_maxRandomValue = 3;
 
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour
         {
             StoreProjectileIntoPool();
             StoreEnemyProjectileIntoPool();
+            StoreBossProjectileIntoPool();
             StoreWeakEnemyIntoPool();
             StoreMediumEnemyIntoPool();
             StoreStrongEnemyIntoPool();
@@ -62,7 +65,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         IsGameRunning = true;
-        StartCoroutine(SpawnEnemy());
+        StartCoroutine(SpawnEnemies());
         StartCoroutine(WaitForSpawnBoss());
     }
 
@@ -81,6 +84,10 @@ public class GameManager : MonoBehaviour
             m_shadowPanel.gameObject.SetActive(true);
             m_shadowPanel2.gameObject.SetActive(true);
             m_scoreText.gameObject.SetActive(true);
+            if (!m_isEnemySpawning)
+            {
+                StartCoroutine(SpawnEnemies());
+            }
         }
     }
 
@@ -123,36 +130,42 @@ public class GameManager : MonoBehaviour
         SpawnBoss(bossSpawnLocation, Quaternion.identity);
     }
 
-    public IEnumerator WaitForSpawnBoss()
+    private IEnumerator WaitForSpawnBoss()
     {
         yield return new WaitForSeconds(m_timeBeforeBossSpawn);
         StartCoroutine(TimeToSpawnBoss());
         IsBossExist = true;
+        m_isEnemySpawning = false;
+    }
+
+    public void WaitForBossToSpawn()
+    {
+        StartCoroutine(WaitForSpawnBoss());
     }
 
     public IEnumerator SpawnEnemies()
     {
+        m_isEnemySpawning = true;
         while (IsGameRunning && !IsBossExist)
         {
             yield return new WaitForSeconds(m_enemySpawnDelay);
 
-            int enemyIndex = Random.Range(0, m_enemyPrefab.Length);
-            float randomXPosition = Random.Range(-m_maxXPosition, m_maxXPosition);
-            Vector2 enemySpawnLocation = new Vector2(randomXPosition, m_maxYPosition);
-        }
-    }
-
-    private IEnumerator SpawnEnemy()
-    {
-        while (IsGameRunning && !IsBossExist)
-        {
-            yield return new WaitForSeconds(m_enemySpawnDelay);
-
-            int enemyIndex = Random.Range(0, m_enemyPrefab.Length);
+            int enemyIndex = Random.Range(m_minRandomValue, m_maxRandomValue);
             float randomXPosition = Random.Range(-m_maxXPosition, m_maxXPosition);
             Vector2 enemySpawnLocation = new Vector2(randomXPosition, m_maxYPosition);
 
-            Instantiate(m_enemyPrefab[enemyIndex], enemySpawnLocation, Quaternion.identity);
+            switch (enemyIndex)
+            {
+                case 0:
+                    SpawnWeakEnemy(enemySpawnLocation, Quaternion.identity);
+                    break;
+                case 1:
+                    SpawnMediumEnemy(enemySpawnLocation, Quaternion.identity);
+                    break;
+                case 2:
+                    SpawnStrongEnemy(enemySpawnLocation, Quaternion.identity);
+                    break;
+            }
         }
     }
 

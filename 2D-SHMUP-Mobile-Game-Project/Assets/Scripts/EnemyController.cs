@@ -26,11 +26,15 @@ public class EnemyController : MonoBehaviour
     private float m_boosSlidingPosition = 1.3f;
     private float m_slidingSpeed = 80f;
     private int m_turningPoint = 1;
+    private int m_startingLives;
     private bool m_hasMoving = false;
+    private bool m_isStrongEnemyShooting;
+    private bool m_isBossShooting;
 
     // Start is called before the first frame update
     private void Start()
     {
+        m_startingLives = m_lives;
         m_enemyRb = GetComponent<Rigidbody2D>();
         m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
@@ -53,6 +57,16 @@ public class EnemyController : MonoBehaviour
         MediumEnemyBehaviour();
         StrongEnemyBehaviour();
         BossBehaviour();
+
+        if (m_canShoot && !m_isStrongEnemyShooting && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(ShootEnemyProjectile());
+        }
+
+        if (m_isBoss && !m_isBossShooting && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(ShootBossProjectile());
+        }
     }
 
     private void FixedUpdate()
@@ -85,6 +99,7 @@ public class EnemyController : MonoBehaviour
 
             if (m_lives <= 0)
             {
+                m_lives = m_startingLives;
                 m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
             }
@@ -101,6 +116,7 @@ public class EnemyController : MonoBehaviour
 
             if (m_lives <= 0)
             {
+                m_lives = m_startingLives;
                 m_gameManager.ReturnMediumEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
             }
@@ -117,8 +133,10 @@ public class EnemyController : MonoBehaviour
 
             if (m_lives <= 0)
             {
+                m_lives = m_startingLives;
                 m_gameManager.ReturnStrongEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
+                m_isStrongEnemyShooting = false;
             }
         }
     }
@@ -128,9 +146,12 @@ public class EnemyController : MonoBehaviour
         {
             if (m_lives <= 0)
             {
+                m_lives = m_startingLives;
                 m_gameManager.DeactivateBoss();
                 m_gameManager.IsBossExist = false;
-                m_gameManager.WaitForSpawnBoss();
+                m_gameManager.WaitForBossToSpawn();
+                m_gameManager.PlayerScore += m_enemyScore;
+                m_isBossShooting = false;
             }
 
             if (transform.position.x >= m_boosSlidingPosition || transform.position.x <= -m_boosSlidingPosition)
@@ -146,6 +167,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator ShootEnemyProjectile()
     {
+        m_isStrongEnemyShooting = true;
         while (m_gameManager.IsGameRunning)
         {
             yield return new WaitForSeconds(m_shootDelay);
@@ -155,6 +177,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator ShootBossProjectile()
     {
+        m_isBossShooting = true;
         while (m_gameManager.IsGameRunning)
         {
             yield return new WaitForSeconds(m_shootDelay);

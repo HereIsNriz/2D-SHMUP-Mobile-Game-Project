@@ -154,12 +154,9 @@ MonoBehaviour:
   IsGameRunning: 0
   IsBossExist: 0
   PlayerScore: 0
-  m_enemyPrefab:
-  - {fileID: 2973681482141443071, guid: 9907d87e43fefc644b53145e4dec7132, type: 3}
-  - {fileID: 3264981192362568334, guid: 80765e4b57861d44aa079b2b02ccae93, type: 3}
-  - {fileID: 3429765812457356530, guid: e27d4c290fe39084892b413709a59bd3, type: 3}
   m_weakEnemyPrefab: {fileID: 2973681482141443071, guid: 9907d87e43fefc644b53145e4dec7132, type: 3}
   m_mediumEnemyPrefab: {fileID: 3264981192362568334, guid: 80765e4b57861d44aa079b2b02ccae93, type: 3}
+  m_strongEnemyPrefab: {fileID: 3429765812457356530, guid: e27d4c290fe39084892b413709a59bd3, type: 3}
   m_bossPrefab: {fileID: 6722612446885885437, guid: 8fc6a120c41ea004a958150ab1271900, type: 3}
   m_projectilePrefab: {fileID: 7984635514949525532, guid: 0b2393cc9b7a8014f9113078ca33d670, type: 3}
   m_enemyProjectilePrefab: {fileID: 6543564567607866249, guid: 2ed023cc32c8e854eb7807a9d611e082, type: 3}
