@@ -25,13 +25,28 @@ public class MovingEnvironment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ResetPosition();
+    }
+
+    private void FixedUpdate()
+    {
+        MoveAndStopTheEnvironment();
+    }
+
+    private void ResetPosition()
+    {
         if (transform.position.y <= m_resetPosition)
         {
             transform.position = m_startPosition;
         }
     }
 
-    private void FixedUpdate()
+    private void MoveGroundAndFloor()
+    {
+        m_envinronmentRb.velocity = Vector2.down * m_speed * Time.deltaTime;
+    }
+
+    private void MoveAndStopTheEnvironment()
     {
         if (m_gameManager.IsBossExist)
         {
@@ -48,10 +63,5 @@ public class MovingEnvironment : MonoBehaviour
                 m_envinronmentRb.velocity = Vector3.zero;
             }
         }
-    }
-
-    private void MoveGroundAndFloor()
-    {
-        m_envinronmentRb.velocity = Vector2.down * m_speed * Time.deltaTime;
     }
 }
