@@ -1682,7 +1682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630c7d3bd787bda4b991c80595c3c8e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Lives: 5
+  Lives: 10
   m_playerProjectile: {fileID: 7984635514949525532, guid: 0b2393cc9b7a8014f9113078ca33d670, type: 3}
   m_speed: 20
   m_shootDelay: 0.8
@@ -1745,9 +1745,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.029531598}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.40033114
 --- !u!95 &1320760258
 Animator:
   serializedVersion: 5

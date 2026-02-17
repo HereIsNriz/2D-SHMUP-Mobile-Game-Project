@@ -19,8 +19,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_touchPosition;
     private bool m_isScreenTouched;
     private float m_xPosition = 1.8f;
-    private float m_minYPosition = -3.5f;
-    private float m_maxYPosition = 0.5f;
+    private float m_yPosition = 4.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -71,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
             transform.position = new Vector3(
                 Mathf.Clamp(transform.position.x, -m_xPosition, m_xPosition),
-                Mathf.Clamp(transform.position.y, m_minYPosition, m_maxYPosition),
+                Mathf.Clamp(transform.position.y, -m_yPosition, m_yPosition),
                 0);
         }
     }
