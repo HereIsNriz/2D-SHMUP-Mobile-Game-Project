@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1769009098402450053
 Transform:
   m_ObjectHideFlags: 0
@@ -101,13 +101,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_enemyProjectileOut: {fileID: 0}
-  m_lives: 2
+  m_lives: 1
   m_speed: 100
-  m_shootDelay: 1.2
+  m_shootDelay: 0
   m_enemyScore: 5
   m_isBoss: 0
   m_canShoot: 0
   m_isWeakEnemy: 1
+  m_isMediumEnemy: 0
 --- !u!50 &5732479005471161106
 Rigidbody2D:
   serializedVersion: 4
@@ -167,9 +168,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.002028942}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.43507814
 --- !u!95 &1593722383931934058
 Animator:
   serializedVersion: 5

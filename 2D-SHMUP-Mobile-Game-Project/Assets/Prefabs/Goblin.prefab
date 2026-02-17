@@ -101,9 +101,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_enemyProjectileOut: {fileID: 0}
-  m_lives: 3
+  m_lives: 2
   m_speed: 100
-  m_shootDelay: 1.2
+  m_shootDelay: 0
   m_enemyScore: 10
   m_isBoss: 0
   m_canShoot: 0
@@ -168,9 +168,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.017245054}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4097178
 --- !u!95 &5325657301396216218
 Animator:
   serializedVersion: 5

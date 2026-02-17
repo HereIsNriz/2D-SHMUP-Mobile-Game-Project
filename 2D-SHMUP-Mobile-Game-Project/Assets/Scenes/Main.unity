@@ -168,7 +168,7 @@ MonoBehaviour:
   m_scoreText: {fileID: 519067050}
   m_newHighScoreText: {fileID: 774048128}
   m_projectilePoolSize: 20
-  m_enemySpawnDelay: 2
+  m_enemySpawnDelay: 1
 --- !u!4 &108102806
 Transform:
   m_ObjectHideFlags: 0
