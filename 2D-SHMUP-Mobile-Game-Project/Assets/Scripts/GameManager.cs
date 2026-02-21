@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_projectilePrefab;
     [SerializeField] private GameObject m_enemyProjectilePrefab;
     [SerializeField] private GameObject m_bossProjectilePrefab;
+    [SerializeField] private GameObject m_gamePausedPanel;
     [SerializeField] private GameObject m_gameOverPanel;
     [SerializeField] private GameObject m_statsPanel;
     [SerializeField] private GameObject m_shadowPanel;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
     private float m_delayBeforeBossSpawn = 5f;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
+    private bool m_isGamePaused;
     private int m_minRandomValue = 0;
     private int m_maxRandomValue = 3;
 
@@ -89,6 +91,15 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(SpawnEnemies());
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && IsGameRunning && !m_isGamePaused)
+        {
+            PauseTheGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && IsGameRunning && m_isGamePaused)
+        {
+            ContinueTheGame();
+        }
     }
 
     private void SetScore()
@@ -101,14 +112,36 @@ public class GameManager : MonoBehaviour
         m_scoreText.text = "Score:\n" +  PlayerScore.ToString();
     }
 
+    public void PauseTheGame()
+    {
+        Time.timeScale = 0;
+        m_isGamePaused = true;
+        m_gamePausedPanel.gameObject.SetActive(true);
+    }
+
+    public void ContinueTheGame()
+    {
+        m_gamePausedPanel.gameObject.SetActive(false);
+        m_isGamePaused = false;
+        Time.timeScale = 1;
+    }
+
+    public void LeaveTheGame()
+    {
+        m_gamePausedPanel.gameObject.SetActive(false);
+        GameOver();
+    }
+
     public void GameOver()
     {
         IsGameRunning = false;
+        Time.timeScale = 0;
         m_gameOverPanel.SetActive(true);
     }
 
     public void NextButton()
     {
+        Time.timeScale = 1;
         m_gameOverPanel.SetActive(false);
         if (m_hasReachNewHighScore)
         {
