@@ -84,4 +84,25 @@ public class PlayerController : MonoBehaviour
             m_gameManager.ShootProjectile(m_projectileOut.transform.position, Quaternion.identity);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Coin"))
+        {
+            m_gameManager.ReturnCoinToPool(collision.gameObject);
+            m_gameManager.PlayerCoin += 10;
+        }
+
+        if (collision.gameObject.CompareTag("Heal"))
+        {
+            m_gameManager.ReturnHealthRegenToPool(collision.gameObject);
+            if (Lives <= 8)
+            {
+                Lives += 2;
+            }else if (Lives == 9)
+            {
+                Lives++;
+            }
+        }
+    }
 }

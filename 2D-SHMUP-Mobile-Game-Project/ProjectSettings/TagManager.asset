@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - EnemyProjectile
   - Sensor
+  - Coin
+  - Heal
   layers:
   - Default
   - TransparentFX

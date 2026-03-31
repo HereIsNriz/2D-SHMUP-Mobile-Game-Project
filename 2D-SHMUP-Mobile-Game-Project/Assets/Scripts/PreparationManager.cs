@@ -7,12 +7,12 @@ using TMPro;
 public class PreparationManager : MonoBehaviour
 {
     //
-    public int HighScore;
-    public int Coins;
 
     //
     [SerializeField] private TextMeshProUGUI m_coinsText;
     [SerializeField] private TextMeshProUGUI m_highScoreText;
+    [SerializeField] private int m_highScore;
+    [SerializeField] private int m_totalCoinsEarned;
 
     //
 
@@ -31,13 +31,14 @@ public class PreparationManager : MonoBehaviour
 
     private void SetCoins()
     {
-        m_coinsText.text = Coins.ToString();
+        m_totalCoinsEarned = PlayerPrefs.GetInt("Coins", 0);
+        m_coinsText.text = m_totalCoinsEarned.ToString();
     }
 
     private void SetHighScore()
     {
-        HighScore = PlayerPrefs.GetInt("HighScore", 0);
-        m_highScoreText.text = "High Score:\n" + HighScore.ToString();
+        m_highScore = PlayerPrefs.GetInt("HighScore", 0);
+        m_highScoreText.text = "High Score:\n" + m_highScore.ToString();
     }
 
     public void BackButton()

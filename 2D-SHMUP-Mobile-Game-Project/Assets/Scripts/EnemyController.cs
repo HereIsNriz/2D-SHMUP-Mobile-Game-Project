@@ -27,6 +27,9 @@ public class EnemyController : MonoBehaviour
     private float m_slidingSpeed = 80f;
     private int m_turningPoint = 1;
     private int m_startingLives;
+    private int m_minRandomValue = 1;
+    private int m_maxRandomValue = 101;
+    private int m_randomValue;
     private bool m_hasMoving = false;
     private bool m_isStrongEnemyShooting;
     private bool m_isBossShooting;
@@ -100,6 +103,7 @@ public class EnemyController : MonoBehaviour
             if (m_lives <= 0)
             {
                 m_lives = m_startingLives;
+                DropItem();
                 m_gameManager.ReturnWeakEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
             }
@@ -117,6 +121,7 @@ public class EnemyController : MonoBehaviour
             if (m_lives <= 0)
             {
                 m_lives = m_startingLives;
+                DropItem();
                 m_gameManager.ReturnMediumEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
             }
@@ -134,6 +139,7 @@ public class EnemyController : MonoBehaviour
             if (m_lives <= 0)
             {
                 m_lives = m_startingLives;
+                DropItem();
                 m_gameManager.ReturnStrongEnemyToPool(this.gameObject);
                 m_gameManager.PlayerScore += m_enemyScore;
                 m_isStrongEnemyShooting = false;
@@ -147,6 +153,7 @@ public class EnemyController : MonoBehaviour
             if (m_lives <= 0)
             {
                 m_lives = m_startingLives;
+                DropItem();
                 m_gameManager.DeactivateBoss();
                 m_gameManager.IsBossExist = false;
                 m_gameManager.WaitForBossToSpawn();
@@ -162,6 +169,33 @@ public class EnemyController : MonoBehaviour
                     m_hasMoving = true;
                 }
             }
+        }
+    }
+
+    private void DropItem()
+    {
+        if (!m_isBoss)
+        {
+            m_randomValue = Random.Range(m_minRandomValue, m_maxRandomValue);
+            if (m_randomValue <= 30)
+            {
+                m_randomValue = Random.Range(m_minRandomValue, m_maxRandomValue);
+                if (m_randomValue <= 20)
+                {
+                    m_gameManager.DropHealthRegen(this.gameObject.transform.position, Quaternion.identity);
+                }
+                else if (m_randomValue <= 80)
+                {
+                    m_gameManager.DropCoin(this.gameObject.transform.position, Quaternion.identity);
+                }
+            }
+        }
+        else
+        {
+            Vector2 coinSpawnLocation = Vector2.up;
+            Vector2 healSpawnLocation = Vector2.down;
+            m_gameManager.DropCoin(this.gameObject.transform.position + (Vector3)coinSpawnLocation, Quaternion.identity);
+            m_gameManager.DropHealthRegen(this.gameObject.transform.position + (Vector3)healSpawnLocation, Quaternion.identity);
         }
     }
 

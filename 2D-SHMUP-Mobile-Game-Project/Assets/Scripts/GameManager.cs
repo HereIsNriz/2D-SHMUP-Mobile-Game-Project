@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public bool IsGameRunning;
     public bool IsBossExist;
     public int PlayerScore;
+    public int PlayerCoin;
 
     //
     [SerializeField] private GameObject m_weakEnemyPrefab;
@@ -19,13 +20,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_projectilePrefab;
     [SerializeField] private GameObject m_enemyProjectilePrefab;
     [SerializeField] private GameObject m_bossProjectilePrefab;
+    [SerializeField] private GameObject m_coinPrefab;
+    [SerializeField] private GameObject m_healthRegenPrefab;
     [SerializeField] private GameObject m_gamePausedPanel;
     [SerializeField] private GameObject m_gameOverPanel;
     [SerializeField] private GameObject m_statsPanel;
     [SerializeField] private GameObject m_shadowPanel;
     [SerializeField] private GameObject m_shadowPanel2;
     [SerializeField] private TextMeshProUGUI m_scoreText;
+    [SerializeField] private TextMeshProUGUI m_currentTimeText;
     [SerializeField] private TextMeshProUGUI m_newHighScoreText;
+    [SerializeField] private TextMeshProUGUI m_finalScoreText;
+    [SerializeField] private TextMeshProUGUI m_playerCoinText;
+    [SerializeField] private TextMeshProUGUI m_timeText;
     [SerializeField] private int m_projectilePoolSize;
     [SerializeField] private float m_enemySpawnDelay = 2f;
 
@@ -37,10 +44,13 @@ public class GameManager : MonoBehaviour
     private Queue<GameObject> m_mediumEnemyPool = new Queue<GameObject>();
     private Queue<GameObject> m_strongEnemyPool = new Queue<GameObject>();
     private Queue<GameObject> m_bossProjectilePool = new Queue<GameObject>();
+    private Queue<GameObject> m_coinPool = new Queue<GameObject>();
+    private Queue<GameObject> m_healthRegenPool = new Queue<GameObject>();
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
     private float m_timeBeforeBossSpawn = 10f;
     private float m_delayBeforeBossSpawn = 5f;
+    private float m_timeValue;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
     private bool m_isGamePaused;
@@ -59,6 +69,8 @@ public class GameManager : MonoBehaviour
             StoreWeakEnemyIntoPool();
             StoreMediumEnemyIntoPool();
             StoreStrongEnemyIntoPool();
+            StoreCoindIntoPool();
+            StoreHealthRegenIntoPool();
         }
         MakeBossExistFirst();
     }
@@ -75,6 +87,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         SetScore();
+        SetTime();
         if (IsBossExist)
         {
             m_shadowPanel.gameObject.SetActive(false);
@@ -109,7 +122,28 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("HighScore", PlayerScore);
             m_hasReachNewHighScore = true;
         }
-        m_scoreText.text = "Score:\n" +  PlayerScore.ToString();
+        m_scoreText.text = "Score:\n" + PlayerScore.ToString();
+    }
+
+    private void SetCoin()
+    {
+        int totalCoins = PlayerPrefs.GetInt("Coins", 0);
+        totalCoins += PlayerCoin;
+        PlayerPrefs.SetInt("Coins", totalCoins);
+
+        m_playerCoinText.text = "Coin: " + PlayerCoin.ToString();
+    }
+
+    private void SetTime()
+    {
+        if (IsGameRunning)
+        {
+            m_timeValue += Time.deltaTime;
+            int minutesValue = Mathf.FloorToInt(m_timeValue / 60);
+            int secondsValue = Mathf.FloorToInt(m_timeValue % 60);
+
+            m_currentTimeText.text = string.Format("{0:00}:{1:00}", minutesValue, secondsValue);
+        }
     }
 
     public void PauseTheGame()
@@ -148,6 +182,10 @@ public class GameManager : MonoBehaviour
             m_newHighScoreText.gameObject.SetActive(true);
         }
         m_statsPanel.SetActive(true);
+
+        m_finalScoreText.text = "Score: " + PlayerScore.ToString();
+        SetCoin();
+        m_timeText.text = $"Time: {m_currentTimeText.text}";
     }
 
     public void BackToMenuButton()
@@ -372,5 +410,55 @@ public class GameManager : MonoBehaviour
     {
         bossProjectile.gameObject.SetActive(false);
         m_bossProjectilePool.Enqueue(bossProjectile);
+    }
+
+    // Coin Pool
+    private GameObject StoreCoindIntoPool()
+    {
+        GameObject coin = Instantiate(m_coinPrefab);
+        coin.gameObject.SetActive(false);
+        m_coinPool.Enqueue(coin);
+
+        return coin;
+    }
+
+    public GameObject DropCoin(Vector2 position, Quaternion rotation)
+    {
+        GameObject coin = m_coinPool.Count > 0 ? m_coinPool.Dequeue() : StoreCoindIntoPool();
+        coin.gameObject.transform.SetPositionAndRotation(position, rotation);
+        coin.gameObject.SetActive(true);
+
+        return coin;
+    }
+
+    public void ReturnCoinToPool(GameObject coin)
+    {
+        coin.gameObject.SetActive(false);
+        m_coinPool.Enqueue(coin);
+    }
+
+    // Health Regen Pool
+    private GameObject StoreHealthRegenIntoPool()
+    {
+        GameObject healthRegen = Instantiate(m_healthRegenPrefab);
+        healthRegen.gameObject.SetActive(false);
+        m_healthRegenPool.Enqueue(healthRegen);
+
+        return healthRegen;
+    }
+
+    public GameObject DropHealthRegen(Vector2 position, Quaternion rotation)
+    {
+        GameObject healthRegen = m_healthRegenPool.Count > 0 ? m_healthRegenPool.Dequeue() : StoreHealthRegenIntoPool();
+        healthRegen.gameObject.transform.SetPositionAndRotation(position, rotation);
+        healthRegen.gameObject.SetActive(true);
+
+        return healthRegen;
+    }
+
+    public void ReturnHealthRegenToPool(GameObject healthRegen)
+    {
+        healthRegen.gameObject.SetActive(false);
+        m_healthRegenPool.Enqueue(healthRegen);
     }
 }
