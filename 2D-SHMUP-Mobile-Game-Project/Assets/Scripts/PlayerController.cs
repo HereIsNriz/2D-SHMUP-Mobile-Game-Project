@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     //
     [SerializeField] private GameObject m_playerProjectile;
+    [SerializeField] private AudioSource m_coinPickupSound;
     [SerializeField] private float m_speed;
     [SerializeField] private float m_shootDelay = 1f;
 
@@ -89,6 +90,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Coin"))
         {
+            m_coinPickupSound.PlayOneShot(m_coinPickupSound.clip, 0.7f);
             m_gameManager.ReturnCoinToPool(collision.gameObject);
             m_gameManager.PlayerCoin += 10;
         }
