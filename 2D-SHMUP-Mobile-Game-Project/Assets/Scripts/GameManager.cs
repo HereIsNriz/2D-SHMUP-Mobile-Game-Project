@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_finalScoreText;
     [SerializeField] private TextMeshProUGUI m_playerCoinText;
     [SerializeField] private TextMeshProUGUI m_timeText;
+    [SerializeField] private AudioSource m_dragonRoarSound;
     [SerializeField] private int m_projectilePoolSize;
     [SerializeField] private float m_enemySpawnDelay = 2f;
 
@@ -197,6 +198,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator TimeToSpawnBoss()
     {
         yield return new WaitForSeconds(m_delayBeforeBossSpawn);
+        m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 0.8f);
         Vector2 bossSpawnLocation = new Vector2(0, m_maxYPosition);
         SpawnBoss(bossSpawnLocation, Quaternion.identity);
     }
