@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     //
     [SerializeField] private GameObject m_playerProjectile;
     [SerializeField] private AudioSource m_coinPickupSound;
+    [SerializeField] private AudioSource m_healPickupSound;
     [SerializeField] private float m_speed;
     [SerializeField] private float m_shootDelay = 1f;
 
@@ -97,6 +98,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Heal"))
         {
+            m_healPickupSound.PlayOneShot(m_healPickupSound.clip, 0.8f);
             m_gameManager.ReturnHealthRegenToPool(collision.gameObject);
             if (Lives <= 8)
             {
