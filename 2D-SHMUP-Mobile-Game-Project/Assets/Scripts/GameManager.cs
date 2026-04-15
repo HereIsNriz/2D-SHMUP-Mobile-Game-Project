@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
     private float m_timeBeforeBossSpawn = 10f;
-    private float m_delayBeforeBossSpawn = 5f;
+    private float m_delayBeforeBossSpawn = 2f;
     private float m_timeValue;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
@@ -198,7 +198,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator TimeToSpawnBoss()
     {
         yield return new WaitForSeconds(m_delayBeforeBossSpawn);
-        m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 0.8f);
         Vector2 bossSpawnLocation = new Vector2(0, m_maxYPosition);
         SpawnBoss(bossSpawnLocation, Quaternion.identity);
     }
@@ -209,6 +208,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TimeToSpawnBoss());
         IsBossExist = true;
         m_isEnemySpawning = false;
+        m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 0.8f);
     }
 
     public void WaitForBossToSpawn()
