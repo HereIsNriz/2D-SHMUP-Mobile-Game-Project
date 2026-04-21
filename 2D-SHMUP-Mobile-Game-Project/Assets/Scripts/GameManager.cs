@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_finalScoreText;
     [SerializeField] private TextMeshProUGUI m_playerCoinText;
     [SerializeField] private TextMeshProUGUI m_timeText;
+    [SerializeField] private AudioSource m_mainSceneMusic;
     [SerializeField] private AudioSource m_dragonRoarSound;
     [SerializeField] private int m_projectilePoolSize;
     [SerializeField] private float m_enemySpawnDelay = 2f;
@@ -152,6 +153,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         m_isGamePaused = true;
         m_gamePausedPanel.gameObject.SetActive(true);
+        m_mainSceneMusic.Pause();
     }
 
     public void ContinueTheGame()
@@ -159,6 +161,7 @@ public class GameManager : MonoBehaviour
         m_gamePausedPanel.gameObject.SetActive(false);
         m_isGamePaused = false;
         Time.timeScale = 1;
+        m_mainSceneMusic.UnPause();
     }
 
     public void LeaveTheGame()
@@ -172,6 +175,7 @@ public class GameManager : MonoBehaviour
         IsGameRunning = false;
         Time.timeScale = 0;
         m_gameOverPanel.SetActive(true);
+        m_mainSceneMusic.Stop();
     }
 
     public void NextButton()
@@ -208,7 +212,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TimeToSpawnBoss());
         IsBossExist = true;
         m_isEnemySpawning = false;
-        m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 0.8f);
+        m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 1f);
     }
 
     public void WaitForBossToSpawn()

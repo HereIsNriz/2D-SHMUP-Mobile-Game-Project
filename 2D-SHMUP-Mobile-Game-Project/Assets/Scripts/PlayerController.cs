@@ -91,14 +91,14 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Coin"))
         {
-            m_coinPickupSound.PlayOneShot(m_coinPickupSound.clip, 0.7f);
+            m_coinPickupSound.PlayOneShot(m_coinPickupSound.clip, 0.9f);
             m_gameManager.ReturnCoinToPool(collision.gameObject);
             m_gameManager.PlayerCoin += 10;
         }
 
         if (collision.gameObject.CompareTag("Heal"))
         {
-            m_healPickupSound.PlayOneShot(m_healPickupSound.clip, 0.8f);
+            m_healPickupSound.PlayOneShot(m_healPickupSound.clip, 1f);
             m_gameManager.ReturnHealthRegenToPool(collision.gameObject);
             if (Lives <= 8)
             {

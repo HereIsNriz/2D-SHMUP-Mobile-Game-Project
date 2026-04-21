@@ -177,6 +177,7 @@ MonoBehaviour:
   m_finalScoreText: {fileID: 1020218952}
   m_playerCoinText: {fileID: 1914588781}
   m_timeText: {fileID: 875337379}
+  m_mainSceneMusic: {fileID: 108102808}
   m_dragonRoarSound: {fileID: 108102807}
   m_projectilePoolSize: 20
   m_enemySpawnDelay: 1
@@ -207,7 +208,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: aa9f912b71626904aaf379d0cc77c362, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -303,7 +304,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 46bae788a6d1c2b48adcd5664f81d026, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2528,7 +2529,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6c01a99258b04d74fa44c64fd84a8d6c, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.9
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2624,7 +2625,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: cca1eaf7456366f4c860e08294792b21, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
