@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_timeText;
     [SerializeField] private AudioSource m_mainSceneMusic;
     [SerializeField] private AudioSource m_dragonRoarSound;
+    [SerializeField] private AudioSource m_mainSceneButtonsSound;
     [SerializeField] private int m_projectilePoolSize;
     [SerializeField] private float m_enemySpawnDelay = 2f;
 
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
     private float m_timeBeforeBossSpawn = 10f;
     private float m_delayBeforeBossSpawn = 2f;
     private float m_timeValue;
+    private float m_mainSceneButtonsSoundDuration = 0.15f;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
     private bool m_isGamePaused;
@@ -154,6 +156,7 @@ public class GameManager : MonoBehaviour
         m_isGamePaused = true;
         m_gamePausedPanel.gameObject.SetActive(true);
         m_mainSceneMusic.Pause();
+        m_mainSceneButtonsSound.PlayOneShot(m_mainSceneButtonsSound.clip, 1f);
     }
 
     public void ContinueTheGame()
@@ -161,6 +164,7 @@ public class GameManager : MonoBehaviour
         m_gamePausedPanel.gameObject.SetActive(false);
         m_isGamePaused = false;
         Time.timeScale = 1;
+        m_mainSceneButtonsSound.PlayOneShot(m_mainSceneButtonsSound.clip, 1f);
         m_mainSceneMusic.UnPause();
     }
 
@@ -191,11 +195,18 @@ public class GameManager : MonoBehaviour
         m_finalScoreText.text = "Score: " + PlayerScore.ToString();
         SetCoin();
         m_timeText.text = $"Time: {m_currentTimeText.text}";
+        m_mainSceneButtonsSound.PlayOneShot(m_mainSceneButtonsSound.clip, 1f);
     }
 
     public void BackToMenuButton()
     {
-        m_statsPanel.SetActive(false);
+        m_mainSceneButtonsSound.PlayOneShot(m_mainSceneButtonsSound.clip, 1f);
+        StartCoroutine(BackToMenuButtonSound());
+    }
+
+    private IEnumerator BackToMenuButtonSound()
+    {
+        yield return new WaitForSeconds(m_mainSceneButtonsSoundDuration);
         SceneManager.LoadScene(0);
     }
 
