@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float m_enemySpawnDelay = 2f;
 
     //
+    private PlayerController m_player;
     private GameObject m_boss;
     private Queue<GameObject> m_projectilePool = new Queue<GameObject>();
     private Queue<GameObject> m_enemyProjectilePool = new Queue<GameObject>();
@@ -55,15 +56,16 @@ public class GameManager : MonoBehaviour
     private float m_timeBeforeBossSpawn = 10f;
     private float m_delayBeforeBossSpawn = 2f;
     private float m_timeValue;
-    private float m_mainSceneButtonsSoundDuration = 0.15f;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
     private bool m_isGamePaused;
+    private bool m_isGameOverSoundOn;
     private int m_minRandomValue = 0;
     private int m_maxRandomValue = 3;
 
     private void Awake()
     {
+        Time.timeScale = 1f;
         m_hasReachNewHighScore = false;
         m_newHighScoreText.gameObject.SetActive(false);
         for (int i = 0; i < m_projectilePoolSize; i++)
@@ -80,15 +82,14 @@ public class GameManager : MonoBehaviour
         MakeBossExistFirst();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
+        m_player = GameObject.Find("Player").GetComponent<PlayerController>();
         IsGameRunning = true;
         StartCoroutine(SpawnEnemies());
         StartCoroutine(WaitForSpawnBoss());
     }
 
-    // Update is called once per frame
     void Update()
     {
         SetScore();
@@ -108,6 +109,12 @@ public class GameManager : MonoBehaviour
             {
                 StartCoroutine(SpawnEnemies());
             }
+        }
+
+        if (m_player.Lives <= 0 && !m_isGameOverSoundOn)
+        {
+            GameOver();
+            m_isGameOverSoundOn = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) && IsGameRunning && !m_isGamePaused)
@@ -186,7 +193,6 @@ public class GameManager : MonoBehaviour
 
     public void NextButton()
     {
-        Time.timeScale = 1;
         m_gameOverPanel.SetActive(false);
         if (m_hasReachNewHighScore)
         {
@@ -203,12 +209,6 @@ public class GameManager : MonoBehaviour
     public void BackToMenuButton()
     {
         m_mainSceneButtonsSound.PlayOneShot(m_mainSceneButtonsSound.clip, 1f);
-        StartCoroutine(BackToMenuButtonSound());
-    }
-
-    private IEnumerator BackToMenuButtonSound()
-    {
-        yield return new WaitForSeconds(m_mainSceneButtonsSoundDuration);
         SceneManager.LoadScene(0);
     }
 

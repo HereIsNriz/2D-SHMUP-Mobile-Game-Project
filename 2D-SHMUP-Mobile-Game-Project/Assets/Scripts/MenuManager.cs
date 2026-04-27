@@ -18,13 +18,16 @@ public class MenuManager : MonoBehaviour
     private float m_playButtonSoundDuration = 0.2f;
     private float m_yesButtonSoundDuration = 0.1f;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        Time.timeScale = 1f;
+    }
+
     void Start()
     {
         m_isExitAppPanelShowing = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         ShowExitAppPanel();

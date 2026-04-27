@@ -20,14 +20,17 @@ public class PreparationManager : MonoBehaviour
     private float m_backButtonSoundDuration = 0.2f;
     private float m_nextButtonSoundDuration = 0.4f;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        Time.timeScale = 1f;
+    }
+
     void Start()
     {
         SetCoins();
         SetHighScore();
     }
 
-    // Update is called once per frame
     void Update()
     {
 
