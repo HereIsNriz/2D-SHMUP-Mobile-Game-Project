@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_playerCoinText;
     [SerializeField] private TextMeshProUGUI m_timeText;
     [SerializeField] private AudioSource m_mainSceneMusic;
+    [SerializeField] private AudioSource m_gameOverSound;
     [SerializeField] private AudioSource m_dragonRoarSound;
     [SerializeField] private AudioSource m_mainSceneButtonsSound;
     [SerializeField] private int m_projectilePoolSize;
@@ -180,6 +181,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         m_gameOverPanel.SetActive(true);
         m_mainSceneMusic.Stop();
+        m_gameOverSound.PlayOneShot(m_gameOverSound.clip, 1f);
     }
 
     public void NextButton()
