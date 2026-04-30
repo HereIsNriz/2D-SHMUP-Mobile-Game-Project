@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_playerCoinText;
     [SerializeField] private TextMeshProUGUI m_timeText;
     [SerializeField] private AudioSource m_mainSceneMusic;
+    [SerializeField] private AudioSource m_bossMusic;
     [SerializeField] private AudioSource m_gameOverSound;
     [SerializeField] private AudioSource m_dragonRoarSound;
     [SerializeField] private AudioSource m_mainSceneButtonsSound;
@@ -53,13 +54,14 @@ public class GameManager : MonoBehaviour
     private Queue<GameObject> m_healthRegenPool = new Queue<GameObject>();
     private float m_maxYPosition = 6f;
     private float m_maxXPosition = 1.5f;
-    private float m_timeBeforeBossSpawn = 10f;
+    private float m_timeBeforeBossSpawn = 20f;
     private float m_delayBeforeBossSpawn = 2f;
     private float m_timeValue;
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
     private bool m_isGamePaused;
     private bool m_isGameOverSoundOn;
+    private bool m_isMainMusicOn;
     private int m_minRandomValue = 0;
     private int m_maxRandomValue = 3;
 
@@ -102,6 +104,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            if (!m_isMainMusicOn)
+            {
+                m_bossMusic.Stop();
+                m_mainSceneMusic.UnPause();
+                m_isMainMusicOn = true;
+            }
             m_shadowPanel.gameObject.SetActive(true);
             m_shadowPanel2.gameObject.SetActive(true);
             m_scoreText.gameObject.SetActive(true);
@@ -188,6 +196,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         m_gameOverPanel.SetActive(true);
         m_mainSceneMusic.Stop();
+        m_bossMusic.Stop();
         m_gameOverSound.PlayOneShot(m_gameOverSound.clip, 1f);
     }
 
@@ -225,6 +234,9 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TimeToSpawnBoss());
         IsBossExist = true;
         m_isEnemySpawning = false;
+        m_mainSceneMusic.Pause();
+        m_bossMusic.Play();
+        m_isMainMusicOn = false;
         m_dragonRoarSound.PlayOneShot(m_dragonRoarSound.clip, 1f);
     }
 
