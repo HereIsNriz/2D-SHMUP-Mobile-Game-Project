@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     //
     [SerializeField] private GameObject m_playerProjectile;
+    [SerializeField] private Slider m_playerHPBar;
     [SerializeField] private AudioSource m_coinPickupSound;
     [SerializeField] private AudioSource m_healPickupSound;
     [SerializeField] private float m_speed;
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
         m_playerRb = GetComponent<Rigidbody2D>();
         m_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         m_projectileOut = GameObject.Find("Projectile Out");
+        m_playerHPBar.maxValue = Lives;
         m_isScreenTouched = false;
         StartCoroutine(ShootProjectile());
     }
@@ -40,6 +43,11 @@ public class PlayerController : MonoBehaviour
         {
             DetectTouchInput();
             MovePlayer();
+            m_playerHPBar.value = Lives;
+        }
+        else
+        {
+            m_playerHPBar.gameObject.SetActive(false);
         }
     }
 
