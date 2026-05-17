@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     //
     [SerializeField] private GameObject m_playerProjectile;
     [SerializeField] private Slider m_playerHPBar;
+    [SerializeField] private AudioSource m_fireSound;
     [SerializeField] private AudioSource m_coinPickupSound;
     [SerializeField] private AudioSource m_healPickupSound;
     [SerializeField] private float m_speed;
@@ -86,6 +87,7 @@ public class PlayerController : MonoBehaviour
         {
             yield return new WaitForSeconds(m_shootDelay);
 
+            m_fireSound.PlayOneShot(m_fireSound.clip, 1f);
             m_gameManager.ShootProjectile(m_projectileOut.transform.position, Quaternion.identity);
         }
     }
