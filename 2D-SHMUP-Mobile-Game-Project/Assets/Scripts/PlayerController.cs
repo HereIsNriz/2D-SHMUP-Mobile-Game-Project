@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject m_playerProjectile;
     [SerializeField] private Slider m_playerHPBar;
     [SerializeField] private AudioSource m_fireSound;
+    [SerializeField] private AudioSource m_hitSound;
     [SerializeField] private AudioSource m_coinPickupSound;
     [SerializeField] private AudioSource m_healPickupSound;
     [SerializeField] private float m_speed;
@@ -94,6 +95,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.CompareTag("EnemyProjectile") || collision.gameObject.CompareTag("Enemy"))
+        {
+            m_hitSound.PlayOneShot(m_hitSound.clip, 1f);
+        }
+
         if (collision.gameObject.CompareTag("Coin"))
         {
             m_coinPickupSound.PlayOneShot(m_coinPickupSound.clip, 0.9f);
