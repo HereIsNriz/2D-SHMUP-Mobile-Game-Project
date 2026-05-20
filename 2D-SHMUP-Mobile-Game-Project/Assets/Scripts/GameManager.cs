@@ -60,7 +60,6 @@ public class GameManager : MonoBehaviour
     private bool m_hasReachNewHighScore;
     private bool m_isEnemySpawning;
     private bool m_isGamePaused;
-    private bool m_isGameOverSoundOn;
     private bool m_isMainMusicOn;
     private int m_minRandomValue = 0;
     private int m_maxRandomValue = 3;
@@ -119,10 +118,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (m_player.Lives <= 0 && !m_isGameOverSoundOn)
+        if (m_player.Lives <= 0)
         {
             GameOver();
-            m_isGameOverSoundOn = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) && IsGameRunning && !m_isGamePaused)
@@ -192,12 +190,15 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        IsGameRunning = false;
-        Time.timeScale = 0;
-        m_gameOverPanel.SetActive(true);
-        m_mainSceneMusic.Stop();
-        m_bossMusic.Stop();
-        m_gameOverSound.PlayOneShot(m_gameOverSound.clip, 1f);
+        if (IsGameRunning)
+        {
+            Time.timeScale = 0;
+            m_gameOverPanel.SetActive(true);
+            m_mainSceneMusic.Stop();
+            m_bossMusic.Stop();
+            m_gameOverSound.PlayOneShot(m_gameOverSound.clip, 1f);
+            IsGameRunning = false;
+        }
     }
 
     public void NextButton()
